@@ -1,12 +1,15 @@
 package se.lexicon;
 
 import se.lexicon.data.DataStorage;
+import se.lexicon.data.DataStorageImpl;
 import se.lexicon.model.Gender;
 import se.lexicon.model.Person;
+import sun.util.resources.LocaleData;
 
 import java.time.LocalDate;
 import java.time.Period;
 import java.util.Comparator;
+import java.util.List;
 
 public class Exercises {
 
@@ -19,6 +22,12 @@ public class Exercises {
         System.out.println(message);
         //Write your code here
 
+        List<Person> foundPeople = DataStorage.INSTANCE.findMany(person -> person.getFirstName().equals("Erik"));
+
+        for (Person p : foundPeople){
+            System.out.println(p);
+        }
+
         System.out.println("----------------------");
     }
 
@@ -27,6 +36,12 @@ public class Exercises {
      */
     public static void exercise2(String message) {
         //Write your code here
+
+        List<Person> females = DataStorage.INSTANCE.findMany(person -> person.getGender().equals(Gender.FEMALE));
+
+        for (Person p : females){
+            System.out.println(p);
+        }
 
         System.out.println("----------------------");
     }
@@ -38,6 +53,17 @@ public class Exercises {
         System.out.println(message);
         //Write your code here
 
+        LocalDate date2000 = LocalDate.of(2000, 1, 1 );
+
+        List<Person> bornAfter;
+        bornAfter = DataStorage.INSTANCE.findMany(person -> {
+            return person.getBirthDate().isAfter(date2000) ;
+        });
+
+        for (Person p : bornAfter){
+            System.out.println(p);
+        }
+
         System.out.println("----------------------");
     }
 
@@ -47,6 +73,10 @@ public class Exercises {
     public static void exercise4(String message) {
         System.out.println(message);
         //Write your code here
+
+       Person personId123 = DataStorage.INSTANCE.findOne(person -> person.getId() == 123);
+
+        System.out.println(personId123);
 
         System.out.println("----------------------");
     }
@@ -59,6 +89,10 @@ public class Exercises {
         System.out.println(message);
         //Write your code here
 
+        DataStorage.INSTANCE.findOneAndMapToString(person -> person.getId() == 456,
+                person -> "Name: " + person.getFirstName() + " "
+                        + person.getLastName() + " born " + person.getBirthDate());
+
         System.out.println("----------------------");
     }
 
@@ -68,6 +102,10 @@ public class Exercises {
     public static void exercise6(String message) {
         System.out.println(message);
         //Write your code here
+
+        DataStorage.INSTANCE.findManyAndMapEachToString(person -> person.getFirstName().startsWith("E"),
+                person -> "Name: " + person.getFirstName() + " "
+                        + person.getLastName() + " born " + person.getBirthDate());
 
         System.out.println("----------------------");
     }
