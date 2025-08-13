@@ -47,36 +47,65 @@ public class DataStorageImpl implements DataStorage {
 
     @Override
     public Person findOne(Predicate<Person> filter) {
-        // TODO: needs completion
+        for (Person person : personList) {
+            if (filter.test(person)) {
+                return person;
+            }
+        }
         return null;
     }
 
     @Override
     public String findOneAndMapToString(Predicate<Person> filter, Function<Person, String> personToString) {
-        // TODO: needs completion
+        for (Person person : personList) {
+            if (filter.test(person)) {
+                return personToString.apply(person);
+            }
+        }
         return null;
     }
 
     @Override
     public List<String> findManyAndMapEachToString(Predicate<Person> filter, Function<Person, String> personToString) {
-        // TODO: needs completion
-        return null;
+        List<String> resultForMany = new ArrayList<>();
+        for (Person person : personList) {
+            if (filter.test(person)) {
+                resultForMany.add(personToString.apply(person));
+            }
+        }
+        return resultForMany;
     }
 
     @Override
     public void findAndDo(Predicate<Person> filter, Consumer<Person> consumer) {
-        // TODO: needs completion
+        for (Person person : personList) {
+            if (filter.test(person)) {
+                consumer.accept(person);
+            }
+        }
     }
 
     @Override
     public List<Person> findAndSort(Comparator<Person> comparator) {
-        // TODO: needs completion
-        return null;
+        List<Person> resultSort = new ArrayList<>();
+        resultSort.addAll(personList);
+        resultSort.sort(comparator);
+
+        return resultSort;
     }
+
 
     @Override
     public List<Person> findAndSort(Predicate<Person> filter, Comparator<Person> comparator) {
-        // TODO: needs completion
-        return null;
+        List<Person> resultFindSort = new ArrayList<>();
+        for (Person person : personList) {
+            if (filter.test(person)) {
+                resultFindSort.add(person);
+            }
+        }
+        resultFindSort.sort(comparator);
+        return resultFindSort;
     }
 }
+
+
