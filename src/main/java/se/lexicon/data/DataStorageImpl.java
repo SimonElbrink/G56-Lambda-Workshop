@@ -3,9 +3,7 @@ package se.lexicon.data;
 import se.lexicon.model.Person;
 import se.lexicon.util.PersonGenerator;
 
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
+import java.util.*;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Predicate;
@@ -50,7 +48,6 @@ public class DataStorageImpl implements DataStorage {
 
     @Override
     public Person findOne(Predicate<Person> filter) {
-        // TODO: just like this???
         for(Person p : personList){
             if(filter.test(p)){
                 return p;
@@ -61,7 +58,6 @@ public class DataStorageImpl implements DataStorage {
 
     @Override
     public String findOneAndMapToString(Predicate<Person> filter, Function<Person, String> personToString) {
-        // TODO: just like this??? map to string like this?
 
         for(Person p : personList){
             if(filter.test(p)){
@@ -73,56 +69,46 @@ public class DataStorageImpl implements DataStorage {
 
     @Override
     public List<String> findManyAndMapEachToString(Predicate<Person> filter, Function<Person, String> personToString) {
-        // TODO: needs testing
+
         List<String> people = new ArrayList<>();
 
-        personList.forEach(s -> {
-            filter.test(s);
-            people.add(personToString.apply(s));
-        });
-
-        /*
         for(Person p : personList){
             if(filter.test(p)){
                 people.add(personToString.apply(p));
             }
         }
-         */
-
         return people;
-
     }
 
     @Override
     public void findAndDo(Predicate<Person> filter, Consumer<Person> consumer) {
-        // TODO: needs testing
-        personList.forEach(s -> {
-            filter.test(s);
-            consumer.accept(s);
-        });
 
+        for(Person p: personList){
+            if(filter.test(p)){
+                consumer.accept(p);
+            }
+        }
     }
 
     @Override
     public List<Person> findAndSort(Comparator<Person> comparator) {
-        // TODO: needs completion
 
-        List<Person> list = new ArrayList<>();
-
+        List<Person> list = personList;
+        Collections.sort(list, comparator);
         return list;
     }
 
     @Override
     public List<Person> findAndSort(Predicate<Person> filter, Comparator<Person> comparator) {
-        // TODO: needs completion
 
         List<Person> list = new ArrayList<>();
 
-        personList.forEach(s -> {
-            filter.test(s);
-            list.add(s);
-        });
-
+        for(Person p : personList){
+            if(filter.test(p)){
+                list.add(p);
+            }
+        }
+        Collections.sort(list, comparator);
 
         return list;
     }

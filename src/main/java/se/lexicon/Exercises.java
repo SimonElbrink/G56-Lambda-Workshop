@@ -70,8 +70,11 @@ public class Exercises {
     public static void exercise4(String message) {
         System.out.println("----------- Exercises class -> Exercise 4 -----------");
 
-        System.out.println(message);
-        //Write your code here
+        Predicate<Person> p = s -> s.getId() == 123;
+
+        Person person = storage.findOne(p);
+
+        System.out.println(person);
 
         System.out.println("----------- END Exercises class -> Exercise 4 -----------");
 
@@ -84,8 +87,12 @@ public class Exercises {
     public static void exercise5(String message) {
         System.out.println("----------- Exercises class -> Exercise 5 -----------");
 
-        System.out.println(message);
-        //Write your code here
+        Predicate<Person> p = s -> s.getId() == 457;
+        Function<Person, String> personToString = person -> "Name: " + person.getFirstName()+" " +person.getLastName() +
+                " born " + person.getBirthDate();
+
+
+        System.out.println(storage.findOneAndMapToString(p, personToString));
 
         System.out.println("----------- END Exercises class -> Exercise 5 -----------");
     }
@@ -96,8 +103,13 @@ public class Exercises {
     public static void exercise6(String message) {
         System.out.println("----------- Exercises class -> Exercise 6 -----------");
 
-        System.out.println(message);
-        //Write your code here
+        Predicate<Person> nameStartsWithPredicate = p -> p.getGender() == Gender.MALE && p.getFirstName().startsWith("E");
+        Function<Person, String> personToStringFunc = person -> "Name: " + person.getFirstName()+" " +person.getLastName() +
+                " born " + person.getBirthDate();
+
+        List<String> list = storage.findManyAndMapEachToString(nameStartsWithPredicate, personToStringFunc);
+
+        list.forEach(System.out::println);
 
         System.out.println("----------- END Exercises class -> Exercise 6 -----------");
 
@@ -110,8 +122,13 @@ public class Exercises {
     public static void exercise7(String message) {
         System.out.println("----------- Exercises class -> Exercise 7 -----------");
 
-        System.out.println(message);
-        //Write your code here
+        Predicate<Person> peopleUnderAge10 = s -> Period.between(s.getBirthDate(), LocalDate.now()).getYears() < 10;
+
+        Function<Person, String> personToStringFunc = person -> person.getFirstName()+" " +person.getLastName() +
+                " " +Period.between(person.getBirthDate(), LocalDate.now()).getYears() + " years old";
+
+        List<String> list = storage.findManyAndMapEachToString(peopleUnderAge10, personToStringFunc);
+        list.forEach(System.out::println);
 
         System.out.println("----------- END Exercises class -> Exercise 7 -----------");
 
@@ -123,8 +140,9 @@ public class Exercises {
     public static void exercise8(String message) {
         System.out.println("----------- Exercises class -> Exercise 8 -----------");
 
-        System.out.println(message);
-        //Write your code here
+        Predicate<Person> firstNamePredicate = p -> p.getFirstName().equals("Ulf");
+        Consumer<Person> personConsumer = person -> System.out.println(person);
+        storage.findAndDo(firstNamePredicate, personConsumer);
 
         System.out.println("----------- END Exercises class -> Exercise 8 -----------");
 
@@ -136,8 +154,10 @@ public class Exercises {
     public static void exercise9(String message) {
         System.out.println("----------- Exercises class -> Exercise 9 -----------");
 
-        System.out.println(message);
-        //Write your code here
+        Predicate<Person> pred  = p -> p.getLastName().toLowerCase().contains(p.getFirstName().toLowerCase());
+        Consumer<Person> personConsumer = s -> System.out.println(s);
+
+        storage.findAndDo(pred, personConsumer);
 
         System.out.println("----------- END Exercises class -> Exercise 9 -----------");
     }
@@ -148,8 +168,10 @@ public class Exercises {
     public static void exercise10(String message) {
         System.out.println("----------- Exercises class -> Exercise 10 -----------");
 
-        System.out.println(message);
-        //Write your code here
+        Predicate<Person> pred = p -> p.getFirstName().equalsIgnoreCase(String.valueOf(new StringBuilder(p.getFirstName()).reverse()));
+        Consumer<Person> personConsumer = s -> System.out.println(s.getFirstName() + " " +s.getLastName());
+
+        storage.findAndDo(pred, personConsumer);
 
         System.out.println("----------- END Exercises class -> Exercise 10 -----------");
 
@@ -161,8 +183,14 @@ public class Exercises {
     public static void exercise11(String message) {
         System.out.println("----------- Exercises class -> Exercise 11 -----------");
 
-        System.out.println(message);
-        //Write your code here
+        Predicate<Person> namePredicate = s -> s.getFirstName().startsWith("A");
+
+        Comparator<Person> bdayComparator = Comparator.comparing(Person::getBirthDate);
+
+        List<Person> list = storage.findAndSort(namePredicate, bdayComparator);
+
+        list.forEach(System.out::println);
+
 
         System.out.println("----------- END Exercises class -> Exercise 11 -----------");
     }
@@ -173,8 +201,13 @@ public class Exercises {
     public static void exercise12(String message) {
         System.out.println("----------- Exercises class -> Exercise 12 -----------");
 
-        System.out.println(message);
-        //Write your code here
+        Predicate<Person> pred = s -> s.getBirthDate().isBefore(LocalDate.ofYearDay(1950, 1));
+
+        Comparator<Person> comparator = (p1, p2) -> p2.getBirthDate().compareTo(p1.getBirthDate());
+
+        List<Person> list = storage.findAndSort(pred, comparator);
+
+        list.forEach(System.out::println);
 
         System.out.println("----------- END Exercises class -> Exercise 12 -----------");
     }
@@ -185,9 +218,20 @@ public class Exercises {
     public static void exercise13(String message) {
         System.out.println("----------- Exercises class -> Exercise 13 -----------");
 
-        System.out.println(message);
-        //Write your code here
+        Comparator<Person> comparator = (p1, p2) -> {
+            if (p1.getLastName().equalsIgnoreCase(p2.getLastName())) {
+                if (p1.getFirstName().equalsIgnoreCase(p2.getFirstName())) {
+                    return p1.getBirthDate().compareTo(p2.getBirthDate());
+                } else {
+                    return p1.getFirstName().compareTo(p2.getFirstName());
+                }
+            }
+            return p1.getLastName().compareTo(p2.getLastName());
+        };
 
+        List<Person> list = storage.findAndSort(comparator);
+
+        list.forEach(System.out::println);
         System.out.println("----------- END Exercises class -> Exercise 13 -----------");
     }
 
