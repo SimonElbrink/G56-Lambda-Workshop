@@ -96,6 +96,10 @@ public class Exercises {
 
 
 
+        DataStorage.INSTANCE.findOneAndMapToString(person -> person.getId() == 456,
+                person -> "Name: " + person.getFirstName() + " "
+                        + person.getLastName() + " born " + person.getBirthDate());
+
         System.out.println("----------------------");
     }
 
