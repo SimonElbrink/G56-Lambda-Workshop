@@ -83,17 +83,31 @@ public class DataStorageImpl implements DataStorage {
     @Override
     public void findAndDo(Predicate<Person> filter, Consumer<Person> consumer) {
         // TODO: needs completion
+        for (Person person : personList) {
+            if (filter.test(person)) {
+                consumer.accept(person);
+            }
+        }
     }
 
     @Override
     public List<Person> findAndSort(Comparator<Person> comparator) {
         // TODO: needs completion
-        return null;
+        List<Person> result = new ArrayList<>(personList);
+        result.sort(comparator);
+        return result;
     }
 
     @Override
     public List<Person> findAndSort(Predicate<Person> filter, Comparator<Person> comparator) {
         // TODO: needs completion
-        return null;
+        List<Person> result = new ArrayList<>(); // Creating a list to store filtered Person objects
+        for (Person person : personList) { // Iterating over each Person object in personList
+            if (filter.test(person)) { // Testing if the Person object satisfies the filter predicate
+                result.add(person); // Adding the Person object to the result list if it satisfies the predicate
+            }
+        }
+        result.sort(comparator);
+        return result;
     }
 }

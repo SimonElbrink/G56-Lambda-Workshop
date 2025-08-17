@@ -89,9 +89,12 @@ public class Exercises {
         System.out.println(message);
         //Write your code here
 
-        DataStorage.INSTANCE.findOneAndMapToString(person -> person.getId() == 456,
+        System.out.println(DataStorage.INSTANCE.findOneAndMapToString(person -> person.getId() == 456,
                 person -> "Name: " + person.getFirstName() + " "
-                        + person.getLastName() + " born " + person.getBirthDate());
+                        + person.getLastName() + " born " + person.getBirthDate())
+);
+
+
 
         System.out.println("----------------------");
     }
@@ -104,8 +107,7 @@ public class Exercises {
         //Write your code here
 
         DataStorage.INSTANCE.findManyAndMapEachToString(person -> person.getFirstName().startsWith("E"),
-                person -> "Name: " + person.getFirstName() + " "
-                        + person.getLastName() + " born " + person.getBirthDate());
+                Person::toString).forEach(System.out::println);
 
         System.out.println("----------------------");
     }
@@ -117,6 +119,10 @@ public class Exercises {
     public static void exercise7(String message) {
         System.out.println(message);
         //Write your code here
+        LocalDate dateTenYears= LocalDate.now().minusYears(10);
+        DataStorage.INSTANCE.findManyAndMapEachToString(person -> person.getBirthDate().isAfter(dateTenYears),
+                person -> "Name: " + person.getFirstName() + " "
+                        + person.getLastName() + (LocalDate.now().getYear() - person.getBirthDate().getYear()) + "years").forEach(System.out::println);
 
         System.out.println("----------------------");
     }
@@ -126,6 +132,8 @@ public class Exercises {
      */
     public static void exercise8(String message) {
         System.out.println(message);
+        DataStorage.INSTANCE.findAndDo(person -> person.getFirstName().equals("Ulf"),
+                System.out::println);
         //Write your code here
 
         System.out.println("----------------------");
@@ -137,6 +145,8 @@ public class Exercises {
     public static void exercise9(String message) {
         System.out.println(message);
         //Write your code here
+        DataStorage.INSTANCE.findAndDo(person -> person.getLastName().toLowerCase().contains(person.getFirstName().toLowerCase()),
+                System.out::println);
 
         System.out.println("----------------------");
     }
@@ -147,7 +157,8 @@ public class Exercises {
     public static void exercise10(String message) {
         System.out.println(message);
         //Write your code here
-
+        DataStorage.INSTANCE.findAndDo(person -> person.getFirstName().equalsIgnoreCase(new StringBuilder(person.getFirstName()).reverse().toString()),
+                person -> System.out.println(person.getFirstName() + " " + person.getLastName()));
         System.out.println("----------------------");
     }
 
@@ -157,7 +168,8 @@ public class Exercises {
     public static void exercise11(String message) {
         System.out.println(message);
         //Write your code here
-
+        DataStorage.INSTANCE.findAndSort(person -> person.getFirstName().startsWith("A"),
+                Comparator.comparing(Person::getBirthDate)).forEach(System.out::println);
         System.out.println("----------------------");
     }
 
@@ -167,7 +179,8 @@ public class Exercises {
     public static void exercise12(String message) {
         System.out.println(message);
         //Write your code here
-
+        DataStorage.INSTANCE.findAndSort(person -> person.getBirthDate().getYear() < 1950,
+                Comparator.comparing(Person::getBirthDate).reversed()).forEach(System.out::println);
         System.out.println("----------------------");
     }
 
@@ -177,6 +190,8 @@ public class Exercises {
     public static void exercise13(String message) {
         System.out.println(message);
         //Write your code here
+        DataStorage.INSTANCE.findAndSort(Comparator.comparing(Person::getLastName).
+                thenComparing(Person::getFirstName).thenComparing(Person::getBirthDate)).forEach(System.out::println);
 
         System.out.println("----------------------");
     }
