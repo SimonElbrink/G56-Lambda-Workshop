@@ -1,12 +1,15 @@
 package se.lexicon;
 
 import se.lexicon.data.DataStorage;
+import se.lexicon.data.DataStorageImpl;
 import se.lexicon.model.Gender;
 import se.lexicon.model.Person;
+import sun.util.resources.LocaleData;
 
 import java.time.LocalDate;
 import java.time.Period;
 import java.util.Comparator;
+import java.util.List;
 
 public class Exercises {
 
@@ -19,6 +22,12 @@ public class Exercises {
         System.out.println(message);
         //Write your code here
 
+        List<Person> foundPeople = DataStorage.INSTANCE.findMany(person -> person.getFirstName().equals("Erik"));
+
+        for (Person p : foundPeople){
+            System.out.println(p);
+        }
+
         System.out.println("----------------------");
     }
 
@@ -27,6 +36,12 @@ public class Exercises {
      */
     public static void exercise2(String message) {
         //Write your code here
+
+        List<Person> females = DataStorage.INSTANCE.findMany(person -> person.getGender().equals(Gender.FEMALE));
+
+        for (Person p : females){
+            System.out.println(p);
+        }
 
         System.out.println("----------------------");
     }
@@ -38,6 +53,17 @@ public class Exercises {
         System.out.println(message);
         //Write your code here
 
+        LocalDate date2000 = LocalDate.of(2000, 1, 1 );
+
+        List<Person> bornAfter;
+        bornAfter = DataStorage.INSTANCE.findMany(person -> {
+            return person.getBirthDate().isAfter(date2000) ;
+        });
+
+        for (Person p : bornAfter){
+            System.out.println(p);
+        }
+
         System.out.println("----------------------");
     }
 
@@ -47,6 +73,10 @@ public class Exercises {
     public static void exercise4(String message) {
         System.out.println(message);
         //Write your code here
+
+       Person personId123 = DataStorage.INSTANCE.findOne(person -> person.getId() == 123);
+
+        System.out.println(personId123);
 
         System.out.println("----------------------");
     }
@@ -59,6 +89,17 @@ public class Exercises {
         System.out.println(message);
         //Write your code here
 
+        System.out.println(DataStorage.INSTANCE.findOneAndMapToString(person -> person.getId() == 456,
+                person -> "Name: " + person.getFirstName() + " "
+                        + person.getLastName() + " born " + person.getBirthDate())
+);
+
+
+
+        DataStorage.INSTANCE.findOneAndMapToString(person -> person.getId() == 456,
+                person -> "Name: " + person.getFirstName() + " "
+                        + person.getLastName() + " born " + person.getBirthDate());
+
         System.out.println("----------------------");
     }
 
@@ -68,6 +109,9 @@ public class Exercises {
     public static void exercise6(String message) {
         System.out.println(message);
         //Write your code here
+
+        DataStorage.INSTANCE.findManyAndMapEachToString(person -> person.getFirstName().startsWith("E"),
+                Person::toString).forEach(System.out::println);
 
         System.out.println("----------------------");
     }
@@ -79,6 +123,10 @@ public class Exercises {
     public static void exercise7(String message) {
         System.out.println(message);
         //Write your code here
+        LocalDate dateTenYears= LocalDate.now().minusYears(10);
+        DataStorage.INSTANCE.findManyAndMapEachToString(person -> person.getBirthDate().isAfter(dateTenYears),
+                person -> "Name: " + person.getFirstName() + " "
+                        + person.getLastName() + (LocalDate.now().getYear() - person.getBirthDate().getYear()) + "years").forEach(System.out::println);
 
         System.out.println("----------------------");
     }
@@ -88,6 +136,8 @@ public class Exercises {
      */
     public static void exercise8(String message) {
         System.out.println(message);
+        DataStorage.INSTANCE.findAndDo(person -> person.getFirstName().equals("Ulf"),
+                System.out::println);
         //Write your code here
 
         System.out.println("----------------------");
@@ -99,6 +149,8 @@ public class Exercises {
     public static void exercise9(String message) {
         System.out.println(message);
         //Write your code here
+        DataStorage.INSTANCE.findAndDo(person -> person.getLastName().toLowerCase().contains(person.getFirstName().toLowerCase()),
+                System.out::println);
 
         System.out.println("----------------------");
     }
@@ -109,7 +161,8 @@ public class Exercises {
     public static void exercise10(String message) {
         System.out.println(message);
         //Write your code here
-
+        DataStorage.INSTANCE.findAndDo(person -> person.getFirstName().equalsIgnoreCase(new StringBuilder(person.getFirstName()).reverse().toString()),
+                person -> System.out.println(person.getFirstName() + " " + person.getLastName()));
         System.out.println("----------------------");
     }
 
@@ -119,7 +172,8 @@ public class Exercises {
     public static void exercise11(String message) {
         System.out.println(message);
         //Write your code here
-
+        DataStorage.INSTANCE.findAndSort(person -> person.getFirstName().startsWith("A"),
+                Comparator.comparing(Person::getBirthDate)).forEach(System.out::println);
         System.out.println("----------------------");
     }
 
@@ -129,7 +183,8 @@ public class Exercises {
     public static void exercise12(String message) {
         System.out.println(message);
         //Write your code here
-
+        DataStorage.INSTANCE.findAndSort(person -> person.getBirthDate().getYear() < 1950,
+                Comparator.comparing(Person::getBirthDate).reversed()).forEach(System.out::println);
         System.out.println("----------------------");
     }
 
@@ -139,6 +194,8 @@ public class Exercises {
     public static void exercise13(String message) {
         System.out.println(message);
         //Write your code here
+        DataStorage.INSTANCE.findAndSort(Comparator.comparing(Person::getLastName).
+                thenComparing(Person::getFirstName).thenComparing(Person::getBirthDate)).forEach(System.out::println);
 
         System.out.println("----------------------");
     }
